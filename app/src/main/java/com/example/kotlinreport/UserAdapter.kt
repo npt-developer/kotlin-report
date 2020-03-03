@@ -55,7 +55,7 @@ class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<RecyclerVie
         this.notifyDataSetChanged()
     }
 
-    fun addAll(listAdd: ArrayList<User?>) {
+    fun addAll(listAdd: ArrayList<User>) {
         val start: Int = mList.size
         val count: Int = listAdd.size
         mList.addAll(listAdd)
@@ -64,7 +64,7 @@ class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<RecyclerVie
 
     fun openLoading() {
         mList.add(null)
-        notifyItemChanged(mList.size - 1)
+        notifyItemInserted(mList.size - 1)
     }
 
     fun closeLoading() {
