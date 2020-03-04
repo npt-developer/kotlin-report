@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">Kotlin Report</string>
+
+    <string name="activity_user_create_title">Thêm mới user</string>
+
+    <string name="hint_user_name">Họ tên*</string>
+    <string name="hint_user_sex">Giới tính*</string>
+    <string name="hint_male">Nam</string>
+    <string name="hint_female">Nữ</string>
+    <string name="hint_user_avata">Ảnh đại diện</string>
+
+    <string name="btn_user_create">Thêm mới</string>
+    <string name="btn_choose_image">Chụp ảnh</string>
+
+    <string name="message_input_required">Bắt buộc nhập</string>
+    <string name="message_radio_required">Bắt buộc chọn</string>
+
 </resources>
