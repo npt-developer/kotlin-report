@@ -1,4 +1,4 @@
-package com.example.kotlinreport
+package com.example.kotlinreport.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.kotlinreport.R
 import com.example.kotlinreport.model.User
 
 class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {

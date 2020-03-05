@@ -1,6 +1,6 @@
 package com.example.kotlinreport.model
 
-class User(var id: Long?, var name: String, var sex: SexType, var avata: String?) {
+class User(var id: Long?, var name: String, var sex: SexType, var avatar: String?) {
 
     companion object {
         @JvmStatic

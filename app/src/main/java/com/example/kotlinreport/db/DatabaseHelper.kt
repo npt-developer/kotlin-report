@@ -11,7 +11,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
         @JvmStatic
         private val DATABASE_NAME: String = "my_db"
         @JvmStatic
-        private val DATABASE_VERSION: Int = 1
+        private val DATABASE_VERSION: Int = 2
     }
 
     override fun onCreate(db: SQLiteDatabase?) {

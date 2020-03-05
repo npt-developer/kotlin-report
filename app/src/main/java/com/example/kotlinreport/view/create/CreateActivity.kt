@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.MenuItem
 import android.view.View
 import android.widget.RadioGroup
 import android.widget.Toast
@@ -24,11 +25,10 @@ class CreateActivity : AppCompatActivity() {
 
     companion object {
         @JvmStatic
-        private val REQUEST_CODE_PIC_IMAGE: Int = 1001
         private val REQUEST_CODE_CAMERA_PUTURE: Int = 1002
     }
 
-    var mSexData: SexType? = null
+    lateinit var mSexData: SexType
     var mAvataBitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +41,15 @@ class CreateActivity : AppCompatActivity() {
 
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        var itemId = item!!.itemId
+        if (itemId == android.R.id.home) {
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     fun onSubmit() {
         if (!validatorUserName()) {
             return
@@ -49,27 +58,30 @@ class CreateActivity : AppCompatActivity() {
         if (!validatorUserSex()) {
             return
         }
+        var user: User = User(
+            null,
+            name = tietUserCreateName.text.toString(),
+            sex = mSexData,
+            avatar = null
+        )
+        val userId = DatabaseManager.insertUser(this, user)
+        user.id = userId
 
-        val userId = DatabaseManager.insertUser(this,
-            User(
-                null,
-                name = tietUserCreateName.text.toString(),
-                sex = mSexData!!,
-                avata = null
-            ))
-
-        mAvataBitmap.let {
-            saveAvata(userId)
+        if (mAvataBitmap !== null && userId > 0) {
+            var avatar: String = "${user.id}.png"
+            saveAvata(avatar)
+            user.avatar = avatar
+            DatabaseManager.updateUser(this, user)
         }
 
-        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Thêm user thành công", Toast.LENGTH_SHORT).show()
+        finish()
 
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_CAMERA_PUTURE && resultCode == Activity.RESULT_OK) {
-            Toast.makeText(this, "ok capture", Toast.LENGTH_SHORT).show()
             mAvataBitmap = data!!.extras.get("data") as Bitmap
             imageViewUserCreateAvata.setImageBitmap(mAvataBitmap)
         }
@@ -132,14 +144,14 @@ class CreateActivity : AppCompatActivity() {
         view.requestFocus()
     }
 
-    private fun saveAvata(userId: Long) {
+    private fun saveAvata(avatar: String) {
         var cw = ContextWrapper(this)
         var directory = cw.getDir("avata", Context.MODE_PRIVATE)
         if (!directory.isDirectory) {
             directory.mkdir()
         }
 
-        var avataPath = File(directory, "${userId}.png")
+        var avataPath = File(directory, avatar)
 
         var fos = FileOutputStream(avataPath)
         mAvataBitmap!!.compress(Bitmap.CompressFormat.PNG, 100, fos)

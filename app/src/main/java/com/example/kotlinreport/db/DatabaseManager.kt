@@ -78,7 +78,7 @@ class DatabaseManager {
                 var contentValues: ContentValues = ContentValues()
                 contentValues.put(User.COLUMN_NAME_NAME, user.name)
                 contentValues.put(User.COLUMN_SEX_NAME, user.sex.toString())
-                contentValues.put(User.COLUMN_AVATA_NAME, user.avata)
+                contentValues.put(User.COLUMN_AVATA_NAME, user.avatar)
 
                 val result: Long = db.insert(User.TABLE_NAME, null, contentValues)
                 Log.d("DatabaseManager", "result ${result}")
@@ -86,6 +86,28 @@ class DatabaseManager {
                 db.setTransactionSuccessful()
                 db.endTransaction()
                 return result
+            }
+        }
+
+        @JvmStatic
+        public fun updateUser(context: Context, user: User): Boolean {
+            Log.d("DatabaseManager", "Update user")
+            synchronized(DatabaseManager::class) {
+                var db = getDbInstance(context)!!.writableDatabase
+                db.beginTransaction()
+
+                var contentValues: ContentValues = ContentValues()
+                contentValues.put(User.COLUMN_NAME_NAME, user.name)
+                contentValues.put(User.COLUMN_SEX_NAME, user.sex.toString())
+                contentValues.put(User.COLUMN_AVATA_NAME, user.avatar)
+                val where: String = "${User.COLUMN_ID_NAME} = ?"
+                var whereArgs: Array<String> = arrayOf(user.id.toString())
+                val result: Int = db.update(User.TABLE_NAME, contentValues, where, whereArgs)
+
+                db.setTransactionSuccessful()
+                db.endTransaction()
+
+                return result > 0
             }
         }
     }
