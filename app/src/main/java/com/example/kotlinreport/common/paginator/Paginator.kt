@@ -1,5 +1,6 @@
 package com.example.kotlinreport.common.paginator
 
+import android.util.Log
 import com.example.kotlinreport.config.AppConfig
 
 class Paginator {
@@ -19,7 +20,7 @@ class Paginator {
     }
 
     fun hasNextPage(): Boolean {
-        val pageLasted: Double = Math.ceil((mTotal / this.mPageSize).toDouble())
+        val pageLasted: Double = Math.ceil((mTotal.toDouble() / this.mPageSize.toDouble()))
         return this.mPage < pageLasted
     }
 

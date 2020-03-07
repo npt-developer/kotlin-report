@@ -135,6 +135,7 @@ class MainActivity : AppCompatActivity(),
 
             mOnLoadMore.mIsLoading = false
             if (mPaginator.hasNextPage()) {
+                Log.d("mPaginator", mPaginator.toString())
                 mOnLoadMore.mHasNextPage = true
                 mPaginator.mPage++
             } else {
@@ -148,10 +149,13 @@ class MainActivity : AppCompatActivity(),
     private fun fakeData(): Unit {
         val total: Long = DatabaseManager.countUser(this)
         var i: Long = 1
+        var random: Random = Random()
         while (i < 11) {
-            var sex: SexType = SexType.MALE
-            if ((i % 2).equals(0)) {
-                Log.d("sex", "${i}-fe")
+            val sexRandom: Int = random.nextInt(2) // [0;1]
+            var sex: SexType
+            if (sexRandom == SexType.MALE.value) {
+                sex = SexType.MALE
+            } else {
                 sex = SexType.FEMALE
             }
             DatabaseManager.insertUser( this,

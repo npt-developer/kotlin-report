@@ -1,5 +1,9 @@
 package com.example.kotlinreport.adapter
 
+import android.content.Context
+import android.content.ContextWrapper
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlinreport.R
 import com.example.kotlinreport.model.SexType
 import com.example.kotlinreport.model.User
+import java.io.File
+import java.io.FileInputStream
 
 class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -90,10 +96,21 @@ class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<RecyclerVie
         fun bindView(user: User?) {
             user?.let {
                 mTextViewName.text = it.name
-                if (it.sex == SexType.MALE) {
-                    mImageViewAvata.setImageResource(R.drawable.ic_man)
+                if (it.avatar != null) {
+                    var cw = ContextWrapper(itemView.context.applicationContext)
+                    var directory = cw.getDir("avata", Context.MODE_PRIVATE)
+
+                    var avataFile = File(directory, it.avatar)
+                    if (avataFile.exists()) {
+                        val bitmap = BitmapFactory.decodeStream(FileInputStream(avataFile))
+                        mImageViewAvata.setImageBitmap(bitmap)
+                    }
                 } else {
-                    mImageViewAvata.setImageResource(R.drawable.ic_woman)
+                    if (it.sex == SexType.MALE) {
+                        mImageViewAvata.setImageResource(R.drawable.ic_man)
+                    } else {
+                        mImageViewAvata.setImageResource(R.drawable.ic_woman)
+                    }
                 }
             }
         }

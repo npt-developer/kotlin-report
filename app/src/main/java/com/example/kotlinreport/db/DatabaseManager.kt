@@ -77,7 +77,7 @@ class DatabaseManager {
 
                 var contentValues: ContentValues = ContentValues()
                 contentValues.put(User.COLUMN_NAME_NAME, user.name)
-                contentValues.put(User.COLUMN_SEX_NAME, user.sex.toString())
+                contentValues.put(User.COLUMN_SEX_NAME, user.sex.value.toString())
                 contentValues.put(User.COLUMN_AVATA_NAME, user.avatar)
 
                 val result: Long = db.insert(User.TABLE_NAME, null, contentValues)
@@ -98,7 +98,7 @@ class DatabaseManager {
 
                 var contentValues: ContentValues = ContentValues()
                 contentValues.put(User.COLUMN_NAME_NAME, user.name)
-                contentValues.put(User.COLUMN_SEX_NAME, user.sex.toString())
+                contentValues.put(User.COLUMN_SEX_NAME, user.sex.value.toString())
                 contentValues.put(User.COLUMN_AVATA_NAME, user.avatar)
                 val where: String = "${User.COLUMN_ID_NAME} = ?"
                 var whereArgs: Array<String> = arrayOf(user.id.toString())
