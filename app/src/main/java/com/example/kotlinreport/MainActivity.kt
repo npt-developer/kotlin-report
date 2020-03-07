@@ -22,6 +22,8 @@ import com.example.kotlinreport.model.SexType
 import com.example.kotlinreport.model.User
 import com.example.kotlinreport.view.create.CreateActivity
 import com.google.android.material.navigation.NavigationView
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(),
     SwipeRefreshLayout.OnRefreshListener,
@@ -34,6 +36,7 @@ class MainActivity : AppCompatActivity(),
     private lateinit var mPaginator: Paginator
     private lateinit var mRecyclerViewUser: RecyclerView
     private lateinit var mSwipeRefreshLayoutMain: SwipeRefreshLayout
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,12 +66,13 @@ class MainActivity : AppCompatActivity(),
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val itemId: Int = item.itemId
         if (itemId == R.id.nav_create) {
-            Toast.makeText(this, "nav_create", Toast.LENGTH_SHORT).show()
             var intent = Intent(this, CreateActivity::class.java)
             startActivity(intent)
         } else if (itemId == R.id.nav_fake_data) {
             Toast.makeText(this, "Fake data add 10 users", Toast.LENGTH_SHORT).show()
             fakeData()
+        } else if (itemId == R.id.nav_clear_data) {
+            DatabaseManager.deleteAllUser(this);
         }
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
@@ -110,15 +114,24 @@ class MainActivity : AppCompatActivity(),
     }
 
     fun getData() {
-        mOnLoadMore.mIsLoading = true
-        mUserAdapter.openLoading()
+        // accept load more if not refresh
+        if (!mSwipeRefreshLayoutMain.isRefreshing) {
+            mOnLoadMore.mIsLoading = true
+            mUserAdapter.openLoading()
+        }
 
         var hander = Handler()
         hander.postDelayed(Runnable() {
-            mUserAdapter.closeLoading()
+            if (!mSwipeRefreshLayoutMain.isRefreshing) {
+                mUserAdapter.closeLoading()
+            }
             val users = DatabaseManager.getUserList(this, mPaginator.getOffset(), mPaginator.mPageSize)
             Log.d("addAllUser", users.size.toString())
             mUserAdapter.addAll(users)
+
+            if (mSwipeRefreshLayoutMain.isRefreshing) {
+                mSwipeRefreshLayoutMain.isRefreshing = false
+            }
 
             mOnLoadMore.mIsLoading = false
             if (mPaginator.hasNextPage()) {
@@ -136,8 +149,13 @@ class MainActivity : AppCompatActivity(),
         val total: Long = DatabaseManager.countUser(this)
         var i: Long = 1
         while (i < 11) {
+            var sex: SexType = SexType.MALE
+            if ((i % 2).equals(0)) {
+                Log.d("sex", "${i}-fe")
+                sex = SexType.FEMALE
+            }
             DatabaseManager.insertUser( this,
-                User(null, "Test ${total + i}", SexType.MALE, null)
+                User(null, "Test ${total + i}", sex, null)
             )
             i++
         }
@@ -149,6 +167,5 @@ class MainActivity : AppCompatActivity(),
         initPaginatorUser()
         Log.d("onRefreshPaginator", "page:${mPaginator.mPage}|total:${mPaginator.mTotal}|offset:${mPaginator.getOffset()}")
         getData()
-        mSwipeRefreshLayoutMain.isRefreshing = false
     }
 }

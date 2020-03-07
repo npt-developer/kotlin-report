@@ -26,5 +26,6 @@
 
     <string name="menu_create">Thêm mới user</string>
     <string name="menu_fake_data">Test: +10 user</string>
+    <string name="menu_clear_data">Test: Clear all user data</string>
 
 </resources>

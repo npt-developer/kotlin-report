@@ -1,12 +1,15 @@
 package com.example.kotlinreport.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlinreport.R
+import com.example.kotlinreport.model.SexType
 import com.example.kotlinreport.model.User
 
 class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -60,7 +63,7 @@ class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<RecyclerVie
         val start: Int = mList.size
         val count: Int = listAdd.size
         mList.addAll(listAdd)
-        notifyItemRangeChanged(start, count)
+        notifyItemRangeInserted(start, count)
     }
 
     fun openLoading() {
@@ -77,14 +80,21 @@ class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<RecyclerVie
 
     class UserViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         var mTextViewName: TextView
+        var mImageViewAvata: ImageView
 
         init {
             mTextViewName = itemView.findViewById(R.id.textViewViewHolderUserName)
+            mImageViewAvata = itemView.findViewById(R.id.imageViewViewHolderUserAvata)
         }
 
         fun bindView(user: User?) {
             user?.let {
                 mTextViewName.text = it.name
+                if (it.sex == SexType.MALE) {
+                    mImageViewAvata.setImageResource(R.drawable.ic_man)
+                } else {
+                    mImageViewAvata.setImageResource(R.drawable.ic_woman)
+                }
             }
         }
 
