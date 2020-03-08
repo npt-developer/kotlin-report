@@ -6,16 +6,30 @@
     android:layout_height="match_parent"
     tools:context=".view.create.CreateActivity">
 
+    <TextView
+        android:id="@+id/textViewErrorCommon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:background="#ff0000"
+        android:text="Error"
+        android:textColor="#ffff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilUserCreateName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/textViewErrorCommon">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/tietUserCreateName"

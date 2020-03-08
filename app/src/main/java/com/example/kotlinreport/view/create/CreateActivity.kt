@@ -1,5 +1,6 @@
 package com.example.kotlinreport.view.create
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
@@ -18,9 +19,11 @@ import com.example.kotlinreport.config.AppConfig
 import com.example.kotlinreport.db.DatabaseManager
 import com.example.kotlinreport.model.SexType
 import com.example.kotlinreport.model.User
+import com.example.kotlinreport.util.PermissionUtils
 import kotlinx.android.synthetic.main.activity_create.*
 import java.io.File
 import java.io.FileOutputStream
+import java.util.ArrayList
 
 
 class CreateActivity : AppCompatActivity() {
@@ -29,6 +32,10 @@ class CreateActivity : AppCompatActivity() {
         @JvmStatic
         private val REQUEST_CODE_CAMERA_PICTURE: Int = 1002
     }
+
+    val mPermissions: ArrayList<String> = arrayListOf(
+        Manifest.permission.CAMERA
+    )
 
     lateinit var mSexData: SexType
     var mAvatarBitmap: Bitmap? = null
@@ -93,6 +100,15 @@ class CreateActivity : AppCompatActivity() {
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        PermissionUtils.onRequestPermissionsResult(this, requestCode, permissions, grantResults, mPermissions, textViewErrorCommon)
+    }
+
     fun initForm() {
         // init checked sex
         if (rgUserCreateSex.checkedRadioButtonId == R.id.rbUserCreateMale) {
@@ -113,8 +129,14 @@ class CreateActivity : AppCompatActivity() {
         })
 
         buttonUserCreateChooseAvatar.setOnClickListener {
-            var intent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(intent, REQUEST_CODE_CAMERA_PICTURE)
+            // check permission
+            val requestPermissions = PermissionUtils.findUnAskedPermissions(this, mPermissions);
+            if (requestPermissions.isNotEmpty()) {
+                PermissionUtils.requestPermissions(this, requestPermissions);
+            } else {
+                var intent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                startActivityForResult(intent, REQUEST_CODE_CAMERA_PICTURE)
+            }
         }
 
         buttonUserCreate.setOnClickListener {

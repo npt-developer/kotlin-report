@@ -1,11 +1,14 @@
 package com.example.kotlinreport.view.update
 
+import android.Manifest
+import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
@@ -19,11 +22,12 @@ import com.example.kotlinreport.config.AppConfig
 import com.example.kotlinreport.db.DatabaseManager
 import com.example.kotlinreport.model.SexType
 import com.example.kotlinreport.model.User
-import kotlinx.android.synthetic.main.activity_create.*
+import com.example.kotlinreport.util.PermissionUtils
 import kotlinx.android.synthetic.main.activity_update.*
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.util.ArrayList
 
 class UpdateActivity : AppCompatActivity() {
 
@@ -31,6 +35,10 @@ class UpdateActivity : AppCompatActivity() {
         @JvmStatic
         private val REQUEST_CODE_CAMERA_PICTURE: Int = 1002
     }
+
+    val mPermissions: ArrayList<String> = arrayListOf(
+        Manifest.permission.CAMERA
+    )
 
     var mAvatarBitmap: Bitmap? = null
     lateinit var mUser: User
@@ -114,6 +122,16 @@ class UpdateActivity : AppCompatActivity() {
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        PermissionUtils.onRequestPermissionsResult(this, requestCode, permissions, grantResults, mPermissions, textViewErrorCommon)
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
     fun initForm() {
         textViewUserUpdateId.text = "Id: ${mUser.id}"
         tietUserUpdateName.setText(mUser.name)
@@ -137,8 +155,14 @@ class UpdateActivity : AppCompatActivity() {
         })
 
         buttonUserUpdateChooseAvatar.setOnClickListener {
-            var intentCamera: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(intentCamera, UpdateActivity.REQUEST_CODE_CAMERA_PICTURE)
+            // check permission
+            val requestPermissions = PermissionUtils.findUnAskedPermissions(this, mPermissions);
+            if (requestPermissions.isNotEmpty()) {
+                PermissionUtils.requestPermissions(this, requestPermissions);
+            } else {
+                var intentCamera: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                startActivityForResult(intentCamera, UpdateActivity.REQUEST_CODE_CAMERA_PICTURE)
+            }
         }
 
         buttonUserUpdate.setOnClickListener {
