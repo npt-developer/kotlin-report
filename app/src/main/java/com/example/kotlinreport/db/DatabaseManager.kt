@@ -112,6 +112,21 @@ class DatabaseManager {
         }
 
         @JvmStatic
+        public fun deleteUser(context: Context, user: User): Boolean {
+            Log.d("DatabaseManager", "Delete user ${user.id}")
+            synchronized(DatabaseManager::class) {
+                var db = getDbInstance(context)!!.writableDatabase
+                db.beginTransaction()
+
+                val result: Int = db.delete(User.TABLE_NAME, "${User.COLUMN_ID_NAME} = ?", arrayOf(user.id.toString()))
+
+                db.setTransactionSuccessful()
+                db.endTransaction()
+
+                return result > 0
+            }
+        }
+        @JvmStatic
         public fun deleteAllUser(context: Context) {
             Log.d("DatabaseManager", "Delete all user")
             synchronized(DatabaseManager::class) {

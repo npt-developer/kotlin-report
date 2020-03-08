@@ -9,8 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlinreport.R
 import com.example.kotlinreport.model.SexType
@@ -18,7 +20,7 @@ import com.example.kotlinreport.model.User
 import java.io.File
 import java.io.FileInputStream
 
-class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+abstract class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         @JvmStatic
@@ -26,6 +28,9 @@ class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<RecyclerVie
         @JvmStatic
         private val VIEW_LOADING: Int = 1
     }
+
+    abstract fun onActionDelete(user: User, position: Int)
+    abstract fun onActionUpdate(user: User, position: Int)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         var viewHolder: RecyclerView.ViewHolder
@@ -53,8 +58,14 @@ class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<RecyclerVie
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is UserViewHolder) {
-            val new = mList.get(position)
-            holder.bindView(new)
+            val user: User = mList.get(position)!!
+            holder.bindView(user)
+            holder.mSwipeActionDelete.setOnClickListener { view ->
+                this.onActionDelete(user, position)
+            }
+            holder.mSwipeActionUpdate.setOnClickListener { view ->
+                this.onActionUpdate(user, position)
+            }
         } else if (holder is LoadingViewHolder) {
             holder.bindView()
         }
@@ -63,6 +74,11 @@ class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<RecyclerVie
     fun clear(): Unit {
         mList.clear()
         this.notifyDataSetChanged()
+    }
+
+    fun removeItem(position: Int) {
+        mList.removeAt(position)
+        this.notifyItemRemoved(position)
     }
 
     fun addAll(listAdd: ArrayList<User>) {
@@ -85,12 +101,23 @@ class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<RecyclerVie
 
 
     class UserViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        // swipe
+        var mSwipeContainer: LinearLayout
+        var mSwipeActionDelete: ImageView
+        var mSwipeActionUpdate: ImageView
+        // item
+        var mViewContent: ConstraintLayout
         var mTextViewName: TextView
-        var mImageViewAvata: ImageView
+        var mImageViewAvatar: ImageView
 
         init {
+            mSwipeContainer = itemView.findViewById(R.id.viewHolderUserSwipeContainer)
+            mSwipeActionDelete = itemView.findViewById(R.id.viewHolderUserSwipeImageViewDelete)
+            mSwipeActionUpdate = itemView.findViewById(R.id.viewHolderUserSwipeImageViewUpdate)
+
+            mViewContent = itemView.findViewById(R.id.viewHolderUserContent)
             mTextViewName = itemView.findViewById(R.id.textViewViewHolderUserName)
-            mImageViewAvata = itemView.findViewById(R.id.imageViewViewHolderUserAvata)
+            mImageViewAvatar = itemView.findViewById(R.id.imageViewViewHolderUserAvatar)
         }
 
         fun bindView(user: User?) {
@@ -103,13 +130,13 @@ class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<RecyclerVie
                     var avataFile = File(directory, it.avatar)
                     if (avataFile.exists()) {
                         val bitmap = BitmapFactory.decodeStream(FileInputStream(avataFile))
-                        mImageViewAvata.setImageBitmap(bitmap)
+                        mImageViewAvatar.setImageBitmap(bitmap)
                     }
                 } else {
                     if (it.sex == SexType.MALE) {
-                        mImageViewAvata.setImageResource(R.drawable.ic_man)
+                        mImageViewAvatar.setImageResource(R.drawable.ic_man)
                     } else {
-                        mImageViewAvata.setImageResource(R.drawable.ic_woman)
+                        mImageViewAvatar.setImageResource(R.drawable.ic_woman)
                     }
                 }
             }

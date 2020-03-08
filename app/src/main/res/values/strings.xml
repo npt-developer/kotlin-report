@@ -7,7 +7,7 @@
     <string name="hint_user_sex">Giới tính*</string>
     <string name="hint_male">Nam</string>
     <string name="hint_female">Nữ</string>
-    <string name="hint_user_avata">Ảnh đại diện</string>
+    <string name="hint_user_avatar">Ảnh đại diện</string>
 
     <string name="btn_user_create">Thêm mới</string>
     <string name="btn_choose_image">Chụp ảnh</string>
@@ -15,12 +15,12 @@
     <string name="message_input_required">Bắt buộc nhập</string>
     <string name="message_radio_required">Bắt buộc chọn</string>
 
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Danh sách user</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">Kotlin Demo</string>
+    <string name="nav_header_subtitle">demo....</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 

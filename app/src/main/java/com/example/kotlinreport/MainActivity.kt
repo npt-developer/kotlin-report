@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kotlinreport.adapter.UserAdapter
 import com.example.kotlinreport.common.paginator.Paginator
+import com.example.kotlinreport.common.recyclerview.ItemTouchHelperCallback
 import com.example.kotlinreport.common.recyclerview.listener.OnScrollLoadMoreRecyclerViewListener
 import com.example.kotlinreport.config.AppConfig
 import com.example.kotlinreport.db.DatabaseManager
@@ -22,6 +23,7 @@ import com.example.kotlinreport.model.SexType
 import com.example.kotlinreport.model.User
 import com.example.kotlinreport.view.create.CreateActivity
 import com.google.android.material.navigation.NavigationView
+import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -36,6 +38,9 @@ class MainActivity : AppCompatActivity(),
     private lateinit var mPaginator: Paginator
     private lateinit var mRecyclerViewUser: RecyclerView
     private lateinit var mSwipeRefreshLayoutMain: SwipeRefreshLayout
+    // swipe
+    private lateinit var mItemTouchHelperExtension:ItemTouchHelperExtension
+    private lateinit var mItemTouchHelperExtensionCallback:ItemTouchHelperExtension.Callback
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,8 +58,6 @@ class MainActivity : AppCompatActivity(),
 
         initRefresh()
         initRecyclerView()
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -80,6 +83,18 @@ class MainActivity : AppCompatActivity(),
         return true
     }
 
+    private fun onActionDelete(user: User, position: Int) {
+        Log.d("onActionUpdate", user.id.toString())
+        DatabaseManager.deleteUser(this, user)
+        mItemTouchHelperExtension.closeOpened()
+        mUserAdapter.removeItem(position)
+        Toast.makeText(this, "Deleted user name \"${user.name}\" success", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun onActionUpdate(user: User, position: Int) {
+        Log.d("onActionUpdate", user.id.toString())
+    }
+
     private fun initPaginatorUser() {
         val total: Long = DatabaseManager.countUser(this)
         Log.d("total", total.toString())
@@ -97,7 +112,15 @@ class MainActivity : AppCompatActivity(),
             mPaginator.mPage++
         }
 
-        mUserAdapter = UserAdapter(mUsers as ArrayList<User?>)
+        mUserAdapter = object : UserAdapter(mUsers as ArrayList<User?>) {
+            override fun onActionDelete(user: User, position: Int) {
+                this@MainActivity.onActionDelete(user, position)
+            }
+
+            override fun onActionUpdate(user: User, position: Int) {
+                this@MainActivity.onActionUpdate(user, position)
+            }
+        }
         mOnLoadMore = object : OnScrollLoadMoreRecyclerViewListener(10) {
             override fun onLoadMore() {
                 Toast.makeText(this@MainActivity, "onLoadMore", Toast.LENGTH_SHORT).show()
@@ -111,6 +134,11 @@ class MainActivity : AppCompatActivity(),
             adapter = mUserAdapter
             addOnScrollListener(mOnLoadMore)
         }
+        // swipe action
+        mItemTouchHelperExtensionCallback = ItemTouchHelperCallback()
+        mItemTouchHelperExtension = ItemTouchHelperExtension(mItemTouchHelperExtensionCallback)
+        mItemTouchHelperExtension.attachToRecyclerView(mRecyclerViewUser)
+
     }
 
     fun getData() {
