@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlinreport.R
+import com.example.kotlinreport.config.AppConfig
 import com.example.kotlinreport.model.SexType
 import com.example.kotlinreport.model.User
 import java.io.File
@@ -76,6 +77,11 @@ abstract class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<Re
         this.notifyDataSetChanged()
     }
 
+    fun updateItem(user: User, position: Int) {
+        mList[position] = user
+        this.notifyItemChanged(position)
+    }
+
     fun removeItem(position: Int) {
         mList.removeAt(position)
         this.notifyItemRemoved(position)
@@ -125,7 +131,7 @@ abstract class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<Re
                 mTextViewName.text = it.name
                 if (it.avatar != null) {
                     var cw = ContextWrapper(itemView.context.applicationContext)
-                    var directory = cw.getDir("avata", Context.MODE_PRIVATE)
+                    var directory = cw.getDir(AppConfig.User.AVATAR_FOLDER_NAME, Context.MODE_PRIVATE)
 
                     var avataFile = File(directory, it.avatar)
                     if (avataFile.exists()) {

@@ -11,7 +11,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
         @JvmStatic
         private val DATABASE_NAME: String = "my_db"
         @JvmStatic
-        private val DATABASE_VERSION: Int = 2
+        private val DATABASE_VERSION: Int = 3
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -22,7 +22,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
                     User.COLUMN_ID_NAME + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     User.COLUMN_NAME_NAME + " CHAR(50) NOT NULL," +
                     User.COLUMN_SEX_NAME + " TINYINT NOT NULL," +
-                    User.COLUMN_AVATA_NAME + " CHAR(100) NULL" +
+                    User.COLUMN_AVATAR_NAME + " CHAR(100) NULL" +
                     ")"
         db?.execSQL(createUserTable)
     }

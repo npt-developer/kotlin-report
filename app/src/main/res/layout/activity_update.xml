@@ -4,10 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.create.CreateActivity">
+    tools:context=".view.update.UpdateActivity">
+
+    <TextView
+        android:id="@+id/textViewUserUpdateId"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Id: "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilUserCreateName"
+        android:id="@+id/tilUserUpdateName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -15,10 +26,10 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/textViewUserUpdateId">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/tietUserCreateName"
+            android:id="@+id/tietUserUpdateName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_user_name" />
@@ -29,42 +40,42 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hint_user_sex"
-        app:layout_constraintBottom_toBottomOf="@+id/rgUserCreateSex"
-        app:layout_constraintStart_toStartOf="@+id/tilUserCreateName"
-        app:layout_constraintTop_toBottomOf="@+id/tilUserCreateName" />
+        app:layout_constraintBottom_toBottomOf="@+id/rgUserUpdateSex"
+        app:layout_constraintStart_toStartOf="@+id/tilUserUpdateName"
+        app:layout_constraintTop_toBottomOf="@+id/tilUserUpdateName" />
 
     <RadioGroup
-        android:id="@+id/rgUserCreateSex"
+        android:id="@+id/rgUserUpdateSex"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/tilUserCreateName">
+        app:layout_constraintTop_toBottomOf="@+id/tilUserUpdateName">
 
         <RadioButton
-            android:id="@+id/rbUserCreateMale"
+            android:id="@+id/rbUserUpdateMale"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="true"
             android:text="@string/hint_male" />
 
         <RadioButton
-            android:id="@+id/rbUserCreateFemale"
+            android:id="@+id/rbUserUpdateFemale"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/hint_female" />
     </RadioGroup>
 
     <TextView
-        android:id="@+id/textViewErrorUserCreateSex"
+        android:id="@+id/textViewErrorUserUpdateSex"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="8dp"
         android:textColor="@color/colorError"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/rgUserCreateSex"
-        app:layout_constraintTop_toBottomOf="@+id/rgUserCreateSex"
+        app:layout_constraintStart_toStartOf="@+id/rgUserUpdateSex"
+        app:layout_constraintTop_toBottomOf="@+id/rgUserUpdateSex"
         tools:visibility="visible" />
 
     <TextView
@@ -85,10 +96,10 @@
         android:shape="ring"
         app:cardCornerRadius="25dp"
         app:layout_constraintStart_toEndOf="@+id/textView3"
-        app:layout_constraintTop_toBottomOf="@+id/textViewErrorUserCreateSex">
+        app:layout_constraintTop_toBottomOf="@+id/textViewErrorUserUpdateSex">
 
         <ImageView
-            android:id="@+id/imageViewUserCreateAvatar"
+            android:id="@+id/imageViewUserUpdateAvatar"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
@@ -98,7 +109,7 @@
     </androidx.cardview.widget.CardView>
 
     <Button
-        android:id="@+id/buttonUserCreateChooseAvatar"
+        android:id="@+id/buttonUserUpdateChooseAvatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -114,11 +125,11 @@
         app:layout_constraintGuide_begin="248dp" />
 
     <Button
-        android:id="@+id/buttonUserCreate"
+        android:id="@+id/buttonUserUpdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/btn_user_create"
+        android:text="@string/btn_user_update"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.427"
         app:layout_constraintStart_toStartOf="parent"

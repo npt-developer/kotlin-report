@@ -15,6 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".view.update.UpdateActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
@@ -25,9 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.create.CreateActivity">
-
-        </activity>
+        <activity android:name=".view.create.CreateActivity"></activity>
     </application>
 
 </manifest>

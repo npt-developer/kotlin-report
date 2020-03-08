@@ -12,7 +12,9 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.RadioGroup
 import android.widget.Toast
+import com.example.kotlinreport.MainActivity
 import com.example.kotlinreport.R
+import com.example.kotlinreport.config.AppConfig
 import com.example.kotlinreport.db.DatabaseManager
 import com.example.kotlinreport.model.SexType
 import com.example.kotlinreport.model.User
@@ -25,11 +27,11 @@ class CreateActivity : AppCompatActivity() {
 
     companion object {
         @JvmStatic
-        private val REQUEST_CODE_CAMERA_PUTURE: Int = 1002
+        private val REQUEST_CODE_CAMERA_PICTURE: Int = 1002
     }
 
     lateinit var mSexData: SexType
-    var mAvataBitmap: Bitmap? = null
+    var mAvatarBitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +69,7 @@ class CreateActivity : AppCompatActivity() {
         val userId = DatabaseManager.insertUser(this, user)
         user.id = userId
 
-        if (mAvataBitmap !== null && userId > 0) {
+        if (mAvatarBitmap !== null && userId > 0) {
             var avatar: String = "${user.id}.png"
             saveAvata(avatar)
             user.avatar = avatar
@@ -75,30 +77,44 @@ class CreateActivity : AppCompatActivity() {
         }
 
         Toast.makeText(this, "Thêm user thành công", Toast.LENGTH_SHORT).show()
+
+        // set result after created user
+        setResult(Activity.RESULT_OK)
         finish()
 
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_CAMERA_PUTURE && resultCode == Activity.RESULT_OK) {
-            mAvataBitmap = data!!.extras.get("data") as Bitmap
-            imageViewUserCreateAvata.setImageBitmap(mAvataBitmap)
+        if (requestCode == REQUEST_CODE_CAMERA_PICTURE && resultCode == Activity.RESULT_OK) {
+            mAvatarBitmap = data!!.extras.get("data") as Bitmap
+
+            updateAvatarView()
         }
     }
 
     fun initForm() {
+        // init checked sex
+        if (rgUserCreateSex.checkedRadioButtonId == R.id.rbUserCreateMale) {
+            mSexData = SexType.MALE
+        } else {
+            mSexData = SexType.FEMALE
+        }
+        updateAvatarView()
+
         rgUserCreateSex.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener { radioGroup, radioButtonId ->
             if (radioButtonId.equals(R.id.rbUserCreateMale)) {
                 mSexData = SexType.MALE
             } else {
                 mSexData = SexType.FEMALE
             }
+
+            updateAvatarView()
         })
 
-        buttonUserCreateChooseAvata.setOnClickListener {
+        buttonUserCreateChooseAvatar.setOnClickListener {
             var intent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(intent, REQUEST_CODE_CAMERA_PUTURE)
+            startActivityForResult(intent, REQUEST_CODE_CAMERA_PICTURE)
         }
 
         buttonUserCreate.setOnClickListener {
@@ -146,7 +162,7 @@ class CreateActivity : AppCompatActivity() {
 
     private fun saveAvata(avatar: String) {
         var cw = ContextWrapper(this)
-        var directory = cw.getDir("avata", Context.MODE_PRIVATE)
+        var directory = cw.getDir(AppConfig.User.AVATAR_FOLDER_NAME, Context.MODE_PRIVATE)
         if (!directory.isDirectory) {
             directory.mkdir()
         }
@@ -154,9 +170,21 @@ class CreateActivity : AppCompatActivity() {
         var avataPath = File(directory, avatar)
 
         var fos = FileOutputStream(avataPath)
-        mAvataBitmap!!.compress(Bitmap.CompressFormat.PNG, 100, fos)
+        mAvatarBitmap!!.compress(Bitmap.CompressFormat.PNG, 100, fos)
         fos.close()
 
         Toast.makeText(this, "Save avata", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun updateAvatarView() {
+        if (mAvatarBitmap == null) {
+            if (mSexData == SexType.MALE) {
+                imageViewUserCreateAvatar.setImageResource(R.drawable.ic_man)
+            } else {
+                imageViewUserCreateAvatar.setImageResource(R.drawable.ic_woman)
+            }
+        } else {
+            imageViewUserCreateAvatar.setImageBitmap(mAvatarBitmap)
+        }
     }
 }

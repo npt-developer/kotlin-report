@@ -1,5 +1,6 @@
 package com.example.kotlinreport
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -22,6 +23,7 @@ import com.example.kotlinreport.db.DatabaseManager
 import com.example.kotlinreport.model.SexType
 import com.example.kotlinreport.model.User
 import com.example.kotlinreport.view.create.CreateActivity
+import com.example.kotlinreport.view.update.UpdateActivity
 import com.google.android.material.navigation.NavigationView
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension
 import java.util.*
@@ -31,6 +33,12 @@ class MainActivity : AppCompatActivity(),
     SwipeRefreshLayout.OnRefreshListener,
     NavigationView.OnNavigationItemSelectedListener {
 
+    companion object {
+        @JvmStatic
+        private val REQUEST_CODE_CREATE_ACTIVITY: Int = 1111
+        @JvmStatic
+        private val REQUEST_CODE_UPDATE_ACTIVITY: Int = 1112
+    }
 
     private lateinit var mUsers: ArrayList<User>
     private lateinit var mUserAdapter: UserAdapter
@@ -70,7 +78,8 @@ class MainActivity : AppCompatActivity(),
         val itemId: Int = item.itemId
         if (itemId == R.id.nav_create) {
             var intent = Intent(this, CreateActivity::class.java)
-            startActivity(intent)
+
+            startActivityForResult(intent, REQUEST_CODE_CREATE_ACTIVITY)
         } else if (itemId == R.id.nav_fake_data) {
             Toast.makeText(this, "Fake data add 10 users", Toast.LENGTH_SHORT).show()
             fakeData()
@@ -83,6 +92,28 @@ class MainActivity : AppCompatActivity(),
         return true
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d("onActivityResult", "requestCode ${requestCode}")
+        if (requestCode == REQUEST_CODE_CREATE_ACTIVITY && resultCode == Activity.RESULT_OK) {
+            // reload data
+            initPaginatorUser()
+            mUserAdapter.clear()
+            getData()
+        } else if (requestCode == REQUEST_CODE_UPDATE_ACTIVITY && resultCode == Activity.RESULT_OK) {
+            val userId = data?.getLongExtra("id", -1)
+            val position = data?.getIntExtra("position", -1)
+            Log.d("resultUpdate", "id:${userId} - position:${position}")
+            if (userId != null && !userId.equals(-1) && position != null && position != -1 ) {
+                val user = DatabaseManager.getUser(this, userId)
+                if (user != null) {
+                    mUserAdapter.updateItem(user, position)
+                }
+            }
+
+        }
+    }
+
     private fun onActionDelete(user: User, position: Int) {
         Log.d("onActionUpdate", user.id.toString())
         DatabaseManager.deleteUser(this, user)
@@ -92,7 +123,13 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun onActionUpdate(user: User, position: Int) {
-        Log.d("onActionUpdate", user.id.toString())
+        Log.d("onActionUpdate", "id:${user.id} - position:${position}")
+
+        var intentUpdate = Intent(this, UpdateActivity::class.java)
+        intentUpdate.putExtra("id", user.id)
+        intentUpdate.putExtra("position", position)
+        startActivityForResult(intentUpdate, REQUEST_CODE_UPDATE_ACTIVITY)
+
     }
 
     private fun initPaginatorUser() {

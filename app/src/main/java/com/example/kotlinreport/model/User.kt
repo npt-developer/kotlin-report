@@ -12,7 +12,7 @@ class User(var id: Long?, var name: String, var sex: SexType, var avatar: String
         @JvmStatic
         public val COLUMN_SEX_NAME: String = "sex"
         @JvmStatic
-        public val COLUMN_AVATA_NAME: String = "avata"
+        public val COLUMN_AVATAR_NAME: String = "avatar"
     }
 
 }
