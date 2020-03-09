@@ -12,7 +12,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.Editable
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.RadioGroup
@@ -128,7 +128,34 @@ class UpdateActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        PermissionUtils.onRequestPermissionsResult(this, requestCode, permissions, grantResults, mPermissions, textViewErrorCommon)
+        PermissionUtils.onRequestPermissionsResult(
+            this,
+            requestCode,
+            permissions,
+            grantResults,
+            mPermissions,
+            object : PermissionUtils.Listener {
+                override fun onSuccess() {
+                    Log.d("PermissionUtils", "onSuccess")
+                    textViewErrorCommon.visibility = View.GONE
+                    startIntentImageCapture()
+                }
+
+                override fun onErrors(
+                    denyPermissions: ArrayList<String>,
+                    hasPermissionDontShowDialog: Boolean
+                ) {
+                    Log.d("PermissionUtils", "onErrors")
+                    var stringBuilder = StringBuilder()
+                    stringBuilder.append("Error: Deny permission\n")
+                    for (denyPermission in denyPermissions) {
+                        stringBuilder.append("+ ${denyPermission}\n")
+                    }
+                    textViewErrorCommon.text = stringBuilder.toString()
+                    textViewErrorCommon.visibility = View.VISIBLE
+                }
+            }
+        )
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -160,14 +187,18 @@ class UpdateActivity : AppCompatActivity() {
             if (requestPermissions.isNotEmpty()) {
                 PermissionUtils.requestPermissions(this, requestPermissions);
             } else {
-                var intentCamera: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                startActivityForResult(intentCamera, UpdateActivity.REQUEST_CODE_CAMERA_PICTURE)
+                startIntentImageCapture()
             }
         }
 
         buttonUserUpdate.setOnClickListener {
             onSubmit()
         }
+    }
+
+    fun startIntentImageCapture() {
+        var intent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(intent, REQUEST_CODE_CAMERA_PICTURE)
     }
 
     fun validatorUserName(): Boolean {

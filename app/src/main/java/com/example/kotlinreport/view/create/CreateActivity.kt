@@ -1,19 +1,21 @@
 package com.example.kotlinreport.view.create
 
 import android.Manifest
+import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.RadioGroup
 import android.widget.Toast
-import com.example.kotlinreport.MainActivity
 import com.example.kotlinreport.R
 import com.example.kotlinreport.config.AppConfig
 import com.example.kotlinreport.db.DatabaseManager
@@ -23,7 +25,8 @@ import com.example.kotlinreport.util.PermissionUtils
 import kotlinx.android.synthetic.main.activity_create.*
 import java.io.File
 import java.io.FileOutputStream
-import java.util.ArrayList
+import java.lang.StringBuilder
+import kotlin.collections.ArrayList
 
 
 class CreateActivity : AppCompatActivity() {
@@ -34,7 +37,9 @@ class CreateActivity : AppCompatActivity() {
     }
 
     val mPermissions: ArrayList<String> = arrayListOf(
-        Manifest.permission.CAMERA
+        Manifest.permission.CAMERA,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE
     )
 
     lateinit var mSexData: SexType
@@ -106,9 +111,37 @@ class CreateActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        PermissionUtils.onRequestPermissionsResult(this, requestCode, permissions, grantResults, mPermissions, textViewErrorCommon)
+        PermissionUtils.onRequestPermissionsResult(
+            this,
+            requestCode,
+            permissions,
+            grantResults,
+            mPermissions,
+            object : PermissionUtils.Listener {
+                override fun onSuccess() {
+                    Log.d("PermissionUtils", "onSuccess")
+                    textViewErrorCommon.visibility = View.GONE
+                    startIntentImageCapture()
+                }
+
+                override fun onErrors(
+                    denyPermissions: ArrayList<String>,
+                    hasPermissionDontShowDialog: Boolean
+                ) {
+                    Log.d("PermissionUtils", "onErrors")
+                    var stringBuilder = StringBuilder()
+                    stringBuilder.append("Error: Deny permission\n")
+                    for (denyPermission in denyPermissions) {
+                        stringBuilder.append("+ ${denyPermission}\n")
+                    }
+                    textViewErrorCommon.text = stringBuilder.toString()
+                    textViewErrorCommon.visibility = View.VISIBLE
+                }
+            }
+        )
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     fun initForm() {
         // init checked sex
         if (rgUserCreateSex.checkedRadioButtonId == R.id.rbUserCreateMale) {
@@ -130,18 +163,22 @@ class CreateActivity : AppCompatActivity() {
 
         buttonUserCreateChooseAvatar.setOnClickListener {
             // check permission
-            val requestPermissions = PermissionUtils.findUnAskedPermissions(this, mPermissions);
+            val requestPermissions = PermissionUtils.findUnAskedPermissions(this, mPermissions)
             if (requestPermissions.isNotEmpty()) {
                 PermissionUtils.requestPermissions(this, requestPermissions);
             } else {
-                var intent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                startActivityForResult(intent, REQUEST_CODE_CAMERA_PICTURE)
+                startIntentImageCapture()
             }
         }
 
         buttonUserCreate.setOnClickListener {
             onSubmit()
         }
+    }
+
+    fun startIntentImageCapture() {
+        var intent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(intent, REQUEST_CODE_CAMERA_PICTURE)
     }
 
     fun validatorUserName(): Boolean {

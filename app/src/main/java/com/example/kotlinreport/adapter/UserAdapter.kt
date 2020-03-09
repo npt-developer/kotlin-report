@@ -62,6 +62,7 @@ abstract class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<Re
             val user: User = mList.get(position)!!
             holder.bindView(user)
             holder.mSwipeActionDelete.setOnClickListener { view ->
+                Log.d("callback", "delete")
                 this.onActionDelete(user, position)
             }
             holder.mSwipeActionUpdate.setOnClickListener { view ->
@@ -106,7 +107,7 @@ abstract class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<Re
 
 
 
-    class UserViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class UserViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         // swipe
         var mSwipeContainer: LinearLayout
         var mSwipeActionDelete: ImageView
@@ -126,25 +127,31 @@ abstract class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<Re
             mImageViewAvatar = itemView.findViewById(R.id.imageViewViewHolderUserAvatar)
         }
 
-        fun bindView(user: User?) {
-            user?.let {
-                mTextViewName.text = it.name
-                if (it.avatar != null) {
-                    var cw = ContextWrapper(itemView.context.applicationContext)
-                    var directory = cw.getDir(AppConfig.User.AVATAR_FOLDER_NAME, Context.MODE_PRIVATE)
+        fun bindView(user: User) {
+            mTextViewName.text = user.name
+            if (user.avatar != null) {
+                var cw = ContextWrapper(itemView.context.applicationContext)
+                var directory = cw.getDir(AppConfig.User.AVATAR_FOLDER_NAME, Context.MODE_PRIVATE)
 
-                    var avataFile = File(directory, it.avatar)
-                    if (avataFile.exists()) {
-                        val bitmap = BitmapFactory.decodeStream(FileInputStream(avataFile))
-                        mImageViewAvatar.setImageBitmap(bitmap)
-                    }
-                } else {
-                    if (it.sex == SexType.MALE) {
-                        mImageViewAvatar.setImageResource(R.drawable.ic_man)
-                    } else {
-                        mImageViewAvatar.setImageResource(R.drawable.ic_woman)
-                    }
+                var avataFile = File(directory, user.avatar)
+                if (avataFile.exists()) {
+                    val bitmap = BitmapFactory.decodeStream(FileInputStream(avataFile))
+                    mImageViewAvatar.setImageBitmap(bitmap)
                 }
+            } else {
+                if (user.sex == SexType.MALE) {
+                    mImageViewAvatar.setImageResource(R.drawable.ic_man)
+                } else {
+                    mImageViewAvatar.setImageResource(R.drawable.ic_woman)
+                }
+            }
+
+            mSwipeActionDelete.setOnClickListener { view ->
+                Log.d("callback", "delete")
+                this@UserAdapter.onActionDelete(user, adapterPosition)
+            }
+            mSwipeActionUpdate.setOnClickListener { view ->
+                this@UserAdapter.onActionUpdate(user, adapterPosition)
             }
         }
 

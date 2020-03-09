@@ -74,6 +74,20 @@ class MainActivity : AppCompatActivity(),
         return true
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+//        return super.onOptionsItemSelected(item)
+        val itemId = item?.itemId
+        when (itemId) {
+            R.id.action_create -> {
+                var intent = Intent(this, CreateActivity::class.java)
+
+                startActivityForResult(intent, REQUEST_CODE_CREATE_ACTIVITY)
+                return true
+            }
+        }
+        return false
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val itemId: Int = item.itemId
         if (itemId == R.id.nav_create) {
