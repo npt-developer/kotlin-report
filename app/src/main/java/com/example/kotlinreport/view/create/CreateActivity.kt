@@ -37,9 +37,7 @@ class CreateActivity : AppCompatActivity() {
     }
 
     val mPermissions: ArrayList<String> = arrayListOf(
-        Manifest.permission.CAMERA,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.READ_EXTERNAL_STORAGE
+        Manifest.permission.CAMERA
     )
 
     lateinit var mSexData: SexType

@@ -174,7 +174,6 @@ class MainActivity : AppCompatActivity(),
         }
         mOnLoadMore = object : OnScrollLoadMoreRecyclerViewListener(10) {
             override fun onLoadMore() {
-                Toast.makeText(this@MainActivity, "onLoadMore", Toast.LENGTH_SHORT).show()
                 getData()
             }
         }
@@ -245,7 +244,6 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onRefresh() {
-        Toast.makeText(this, "Refresh", Toast.LENGTH_SHORT).show()
         mUserAdapter.clear()
         initPaginatorUser()
         Log.d("onRefreshPaginator", "page:${mPaginator.mPage}|total:${mPaginator.mTotal}|offset:${mPaginator.getOffset()}")
