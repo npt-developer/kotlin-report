@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.chauthai.swipereveallayout.SwipeRevealLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/viewHolderUserSwipeRevealLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:dragEdge="right"
+    app:mode="same_level">
 
+    <!--Swipe Layout-->
     <LinearLayout
-        android:id="@+id/viewHolderUserSwipeContainer"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:clickable="true"
         android:orientation="horizontal">
 
         <ImageView
@@ -19,7 +20,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="?android:attr/selectableItemBackground"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:background="#ff0000"
             android:padding="12dp"
             android:clickable="true"
             app:srcCompat="@drawable/ic_delete_black_24dp"
@@ -30,23 +32,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="?android:attr/selectableItemBackground"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:background="#4CAF50"
             android:padding="12dp"
             android:clickable="true"
             app:srcCompat="@drawable/ic_edit_black_24dp"
             tools:ignore="VectorDrawableCompat" />
-
     </LinearLayout>
 
+    <!--Main Layout-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/viewHolderUserContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@android:color/white"
-        android:clickable="true"
-        android:focusable="true"
-        tools:visibility="visible"
-        tools:showIn="@layout/view_holder_user">
+        tools:visibility="visible">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/viewHolderCardViewAvatar"
@@ -87,4 +87,5 @@
             app:layout_constraintStart_toEndOf="@+id/viewHolderCardViewAvatar"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</FrameLayout>
+
+</com.chauthai.swipereveallayout.SwipeRevealLayout>

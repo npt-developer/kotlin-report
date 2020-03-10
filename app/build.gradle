@@ -43,7 +43,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     //    recycler view swipe
-    implementation 'com.loopeer.library:itemtouchhelperextension:1.0.6'
+    implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
     // refresh layout
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     // debug: chrome inspect network + sqlite
