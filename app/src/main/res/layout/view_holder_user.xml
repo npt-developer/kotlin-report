@@ -17,7 +17,7 @@
 
         <ImageView
             android:id="@+id/viewHolderUserSwipeImageViewDelete"
-            android:layout_width="match_parent"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:foreground="?android:attr/selectableItemBackground"
@@ -29,7 +29,7 @@
 
         <ImageView
             android:id="@+id/viewHolderUserSwipeImageViewUpdate"
-            android:layout_width="match_parent"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:foreground="?android:attr/selectableItemBackground"
