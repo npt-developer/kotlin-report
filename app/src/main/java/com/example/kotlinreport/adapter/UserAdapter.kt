@@ -8,16 +8,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlinreport.R
 import com.example.kotlinreport.config.AppConfig
 import com.example.kotlinreport.model.SexType
 import com.example.kotlinreport.model.User
+import com.loopeer.itemtouchhelperextension.Extension
 import java.io.File
 import java.io.FileInputStream
 
@@ -61,13 +59,6 @@ abstract class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<Re
         if (holder is UserViewHolder) {
             val user: User = mList.get(position)!!
             holder.bindView(user)
-            holder.mSwipeActionDelete.setOnClickListener { view ->
-                Log.d("callback", "delete")
-                this.onActionDelete(user, position)
-            }
-            holder.mSwipeActionUpdate.setOnClickListener { view ->
-                this.onActionUpdate(user, position)
-            }
         } else if (holder is LoadingViewHolder) {
             holder.bindView()
         }
@@ -107,7 +98,8 @@ abstract class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<Re
 
 
 
-    inner class UserViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class UserViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), Extension {
+
         // swipe
         var mSwipeContainer: LinearLayout
         var mSwipeActionDelete: ImageView
@@ -125,6 +117,10 @@ abstract class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<Re
             mViewContent = itemView.findViewById(R.id.viewHolderUserContent)
             mTextViewName = itemView.findViewById(R.id.textViewViewHolderUserName)
             mImageViewAvatar = itemView.findViewById(R.id.imageViewViewHolderUserAvatar)
+        }
+
+        override fun getActionWidth(): Float {
+            return mSwipeContainer.width.toFloat()
         }
 
         fun bindView(user: User) {
@@ -146,12 +142,16 @@ abstract class UserAdapter(var mList: ArrayList<User?>): RecyclerView.Adapter<Re
                 }
             }
 
+            mViewContent.setOnClickListener {view ->
+                Log.d("action", "content")
+            }
             mSwipeActionDelete.setOnClickListener { view ->
-                Log.d("callback", "delete")
-                this@UserAdapter.onActionDelete(user, adapterPosition)
+                Log.d("action", "delete")
+                this@UserAdapter.onActionDelete(user, layoutPosition)
             }
             mSwipeActionUpdate.setOnClickListener { view ->
-                this@UserAdapter.onActionUpdate(user, adapterPosition)
+                Log.d("action", "update")
+                this@UserAdapter.onActionUpdate(user, layoutPosition)
             }
         }
 

@@ -32,16 +32,17 @@ class ItemTouchHelperCallback: ItemTouchHelperExtension.Callback() {
         actionState: Int,
         isCurrentlyActive: Boolean
     ) {
+//        if (dX.equals(0) && !dY.equals(0)) {
+//            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+//        }
         var dxNew: Float = dX
         if (viewHolder is UserAdapter.UserViewHolder) {
 
-            if (dX < -viewHolder.mSwipeContainer.width) {
-                dxNew = -viewHolder.mSwipeContainer.width.toFloat()
+            if (dxNew < -viewHolder.actionWidth) {
+                dxNew = -viewHolder.actionWidth
             }
             viewHolder.mViewContent.translationX = dxNew
         }
-
-
     }
 
 }

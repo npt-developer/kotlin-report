@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:background="#ff0000"
+        android:background="?attr/colorError"
         android:text="Error"
         android:textColor="#ffff"
         android:visibility="gone"
@@ -33,6 +33,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilUserUpdateName"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -93,15 +94,15 @@
         tools:visibility="gone" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textViewUserUpdateAvatarLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hint_user_avatar"
-        app:layout_constraintBottom_toBottomOf="@+id/cardView"
+        app:layout_constraintBottom_toBottomOf="@+id/cardViewUserUpdateAvatar"
         app:layout_constraintStart_toStartOf="@+id/textView" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/cardViewUserUpdateAvatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -109,7 +110,7 @@
         android:innerRadius="0dp"
         android:shape="ring"
         app:cardCornerRadius="25dp"
-        app:layout_constraintStart_toEndOf="@+id/textView3"
+        app:layout_constraintStart_toEndOf="@+id/textViewUserUpdateAvatarLabel"
         app:layout_constraintTop_toBottomOf="@+id/textViewErrorUserUpdateSex">
 
         <ImageView
@@ -127,28 +128,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        app:fabSize="mini"
         android:clickable="true"
         app:backgroundTint="#4CAF50"
-        app:layout_constraintBottom_toBottomOf="@+id/cardView"
-        app:layout_constraintStart_toEndOf="@+id/cardView"
+        app:layout_constraintBottom_toBottomOf="@+id/cardViewUserUpdateAvatar"
+        app:layout_constraintStart_toEndOf="@+id/cardViewUserUpdateAvatar"
         app:srcCompat="@drawable/ic_menu_camera" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline4"
+    <androidx.constraintlayout.widget.Barrier
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="327dp" />
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="textViewUserUpdateAvatarLabel,cardViewUserUpdateAvatar,buttonUserUpdateChooseAvatar" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/buttonUserUpdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:text="@string/btn_user_update"
         app:icon="@drawable/ic_save_black_24dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline4" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonUserUpdateChooseAvatar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
