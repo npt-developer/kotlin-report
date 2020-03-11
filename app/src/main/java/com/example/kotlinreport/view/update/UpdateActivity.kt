@@ -87,12 +87,10 @@ class UpdateActivity : AppCompatActivity() {
         if (!validatorUserSex()) {
             return
         }
-        // save avate
+        // save avatar
         if (mAvatarBitmap !== null) {
-            val avatarName: String = "${mUser.id}.png"
-            saveAvata(avatarName)
-            mUser.avatar = avatarName
-
+            mUser.avatar = "${mUser.id}.png"
+            mUser.saveAvatar(this, mAvatarBitmap!!)
         }
         // update user data
         mUser.name = tietUserUpdateName.text.toString()
@@ -197,7 +195,7 @@ class UpdateActivity : AppCompatActivity() {
     }
 
     fun startIntentImageCapture() {
-        var intent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val intent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(intent, REQUEST_CODE_CAMERA_PICTURE)
     }
 
@@ -237,22 +235,6 @@ class UpdateActivity : AppCompatActivity() {
     private fun requestFocus(view: View) {
         view.isFocusableInTouchMode = true
         view.requestFocus()
-    }
-
-    private fun saveAvata(avatar: String) {
-        var cw = ContextWrapper(this)
-        var directory = cw.getDir(AppConfig.User.AVATAR_FOLDER_NAME, Context.MODE_PRIVATE)
-        if (!directory.isDirectory) {
-            directory.mkdir()
-        }
-
-        var avataPath = File(directory, avatar)
-
-        var fos = FileOutputStream(avataPath)
-        mAvatarBitmap!!.compress(Bitmap.CompressFormat.PNG, 100, fos)
-        fos.close()
-
-        Toast.makeText(this, "Save avata", Toast.LENGTH_SHORT).show()
     }
 
     private fun updateAvatarView() {

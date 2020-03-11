@@ -3,8 +3,6 @@ package com.example.kotlinreport.view.create
 import android.Manifest
 import android.annotation.TargetApi
 import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
@@ -17,14 +15,11 @@ import android.view.View
 import android.widget.RadioGroup
 import android.widget.Toast
 import com.example.kotlinreport.R
-import com.example.kotlinreport.config.AppConfig
 import com.example.kotlinreport.db.DatabaseManager
 import com.example.kotlinreport.model.SexType
 import com.example.kotlinreport.model.User
 import com.example.kotlinreport.util.PermissionUtils
 import kotlinx.android.synthetic.main.activity_create.*
-import java.io.File
-import java.io.FileOutputStream
 import java.lang.StringBuilder
 import kotlin.collections.ArrayList
 
@@ -79,10 +74,11 @@ class CreateActivity : AppCompatActivity() {
         val userId = DatabaseManager.insertUser(this, user)
         user.id = userId
 
+        // save avatar
         if (mAvatarBitmap !== null && userId > 0) {
-            var avatar: String = "${user.id}.png"
-            saveAvata(avatar)
-            user.avatar = avatar
+            user.avatar = "${user.id}.png"
+            user.saveAvatar(this, mAvatarBitmap!!)
+
             DatabaseManager.updateUser(this, user)
         }
 
@@ -175,7 +171,7 @@ class CreateActivity : AppCompatActivity() {
     }
 
     fun startIntentImageCapture() {
-        var intent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val intent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(intent, REQUEST_CODE_CAMERA_PICTURE)
     }
 
@@ -215,22 +211,6 @@ class CreateActivity : AppCompatActivity() {
     private fun requestFocus(view: View) {
         view.isFocusableInTouchMode = true
         view.requestFocus()
-    }
-
-    private fun saveAvata(avatar: String) {
-        var cw = ContextWrapper(this)
-        var directory = cw.getDir(AppConfig.User.AVATAR_FOLDER_NAME, Context.MODE_PRIVATE)
-        if (!directory.isDirectory) {
-            directory.mkdir()
-        }
-
-        var avataPath = File(directory, avatar)
-
-        var fos = FileOutputStream(avataPath)
-        mAvatarBitmap!!.compress(Bitmap.CompressFormat.PNG, 100, fos)
-        fos.close()
-
-        Toast.makeText(this, "Save avata", Toast.LENGTH_SHORT).show()
     }
 
     private fun updateAvatarView() {
