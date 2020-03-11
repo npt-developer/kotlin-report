@@ -8,7 +8,9 @@ import android.os.Handler
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -53,9 +55,7 @@ class MainActivity : AppCompatActivity(),
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_view)
-        navView.setNavigationItemSelectedListener(this)
+        initDrawerLayoutNavigationView()
 
         initPaginatorUser()
 
@@ -70,7 +70,6 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-//        return super.onOptionsItemSelected(item)
         val itemId = item?.itemId
         when (itemId) {
             R.id.action_create -> {
@@ -133,11 +132,30 @@ class MainActivity : AppCompatActivity(),
     private fun onActionUpdate(user: User, position: Int) {
         Log.d("onActionUpdate", "id:${user.id} - position:${position}")
 
-        var intentUpdate = Intent(this, UpdateActivity::class.java)
+        val intentUpdate = Intent(this, UpdateActivity::class.java)
         intentUpdate.putExtra("id", user.id)
         intentUpdate.putExtra("position", position)
         startActivityForResult(intentUpdate, REQUEST_CODE_UPDATE_ACTIVITY)
 
+    }
+
+    /**
+     * Init DrawerLayout, NavigationView
+     */
+    private fun  initDrawerLayoutNavigationView() {
+        val toolbar: Toolbar  = findViewById(R.id.toolbar)
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        val toggle: ActionBarDrawerToggle = object: ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            override fun onDrawerClosed(drawerView: View) {
+                super.onDrawerClosed(drawerView)
+                val navView: NavigationView = findViewById(R.id.nav_view)
+                // un checked item if has
+                navView.checkedItem?.isChecked = false
+            }
+        }
+        drawerLayout.addDrawerListener(toggle)
+        val navView: NavigationView = findViewById(R.id.nav_view)
+        navView.setNavigationItemSelectedListener(this)
     }
 
     private fun initPaginatorUser() {
@@ -150,6 +168,7 @@ class MainActivity : AppCompatActivity(),
         mSwipeRefreshLayoutMain = findViewById(R.id.swipeRefreshLayoutMain)
         mSwipeRefreshLayoutMain.setOnRefreshListener(this)
     }
+
     private fun initRecyclerView() {
         mUsers = DatabaseManager.getUserList(this, mPaginator.getOffset(), mPaginator.mPageSize)
         Log.d("Users", mUsers.size.toString())
