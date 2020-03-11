@@ -21,10 +21,12 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:background="#ff3543"
+            android:tint="@android:color/white"
             android:clickable="true"
+            android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
             android:padding="12dp"
-            app:srcCompat="@drawable/ic_delete_white_24dp"
+            app:srcCompat="@drawable/ic_delete_black_24dp"
             tools:ignore="VectorDrawableCompat" />
 
         <ImageView
@@ -33,10 +35,12 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:background="#36c470"
+            android:tint="@android:color/white"
             android:clickable="true"
+            android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
             android:padding="12dp"
-            app:srcCompat="@drawable/ic_edit_white_24dp"
+            app:srcCompat="@drawable/ic_edit_black_24dp"
             tools:ignore="VectorDrawableCompat" />
     </LinearLayout>
 
